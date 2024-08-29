@@ -8,10 +8,10 @@ My CV in [PDF](https://drive.google.com/file/d/1Q7RRe8H6BiL7q35UKtEnEl1nZOMpdfE2
 This repository serves to showcase my skills and as a platform to share my projects, and a way to track my progress in Data Analytics and Data Science-related topics.
 
 ## Portfolio Projects
-In this section I will list data analytics projects briefly describing the technology stack used to solve cases.
+In this section, I will list data analytics projects briefly describing the technology stack used to solve cases.
 
 ### Digital Marketing Analysis
-**Code:** [fresh_segments.sql](https://drive.google.com/file/d/16Hq1pSkPKCU9mZ98ooxniS4uR9MHKky8/view?usp=sharing)
+**Code:** [fresh_segments.sql](./fresh_segments.sql)
 
 **Description:** A case study created by datawithdanny.com 
 
