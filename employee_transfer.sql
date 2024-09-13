@@ -1,3 +1,5 @@
+-- NOTE THAT THERE ARE QUESTIONS AND SOLUTIONS BELOW THE SCHEMA CODE
+
 -- Create the InternalTransfers table with OldDepartment and NewDepartment columns
 CREATE TABLE InternalTransfers (
 EmployeeID INT PRIMARY KEY,
@@ -139,3 +141,82 @@ INSERT INTO Resignations (EmployeeID, EmployeeName, Department) VALUES
 (37, 'Lucas Hayes', 'IT'),
 (38, 'Lily Rogers', 'Finance'),
 (49, 'Mason Nelson', 'Finance');
+
+
+--QUESTIONS AND SOLUTIONS
+--1. **New Hires**: Find employees who were newly hired in the first half of 2023.
+SELECT EmployeeID, EmployeeName, Department, HireDate
+FROM NewHires
+WHERE HireDate BETWEEN '2023-01-01' AND '2023-06-30';
+
+
+--2. **Internal Transfers**: Out of these employees hired, find out those who transferred to the Finance department using the internal transfers table.
+SELECT IT.EmployeeID, IT.EmployeeName, IT.OldDepartment, IT.NewDepartment
+FROM InternalTransfers IT
+JOIN (
+    SELECT EmployeeID
+    FROM NewHires
+    WHERE HireDate BETWEEN '2023-01-01' AND '2023-06-30'
+) NH ON IT.EmployeeID = NH.EmployeeID
+WHERE IT.NewDepartment = 'Finance';
+
+--OR using 'WHERE IN' clause
+SELECT EmployeeID, EmployeeName, OldDepartment, NewDepartment
+FROM InternalTransfers
+WHERE NewDepartment = 'Finance'
+AND EmployeeID IN (
+    SELECT EmployeeID
+    FROM NewHires
+    WHERE HireDate BETWEEN '2023-01-01' AND '2023-06-30'
+);
+
+--OR using 'INTERSECT'
+SELECT EmployeeID
+FROM InternalTransfers
+WHERE NewDepartment = 'Finance'
+INTERSECT
+SELECT EmployeeID
+FROM NewHires
+WHERE HireDate BETWEEN '2023-01-01' AND '2023-06-30';
+
+
+--3. **Resignations**: Out of those who transferred to the finance department, find out those who have resigned
+SELECT R.EmployeeID, R.EmployeeName, R.Department
+FROM Resignations R
+JOIN (
+    SELECT IT.EmployeeID
+    FROM InternalTransfers IT
+    JOIN (
+        SELECT EmployeeID
+        FROM NewHires
+        WHERE HireDate BETWEEN '2023-01-01' AND '2023-06-30'
+    ) NH ON IT.EmployeeID = NH.EmployeeID
+    WHERE IT.NewDepartment = 'Finance'
+) T ON R.EmployeeID = T.EmployeeID;
+
+--OR using 'WHERE IN' clause
+SELECT EmployeeID, EmployeeName, Department
+FROM Resignations
+WHERE EmployeeID IN (
+    SELECT EmployeeID
+    FROM InternalTransfers
+    WHERE NewDepartment = 'Finance'
+    AND EmployeeID IN (
+        SELECT EmployeeID
+        FROM NewHires
+        WHERE HireDate BETWEEN '2023-01-01' AND '2023-06-30'
+    )
+);
+
+--OR using 'INTERSECT'
+SELECT EmployeeID
+FROM Resignations
+INTERSECT
+SELECT EmployeeID
+FROM InternalTransfers
+WHERE NewDepartment = 'Finance'
+AND EmployeeID IN (
+    SELECT EmployeeID
+    FROM NewHires
+    WHERE HireDate BETWEEN '2023-01-01' AND '2023-06-30'
+);
